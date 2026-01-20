@@ -1,0 +1,3 @@
+[ERROR] Database connection failed
+[ERROR] Null reference exception occurred
+[ERROR] File not found

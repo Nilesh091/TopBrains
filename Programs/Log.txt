@@ -1,0 +1,8 @@
+[INFO] Application started successfully
+[WARN] Low disk space detected
+[ERROR] Database connection failed
+[INFO] User logged in
+[ERROR] Null reference exception occurred
+[WARN] Memory usage high
+[INFO] Data processed successfully
+[ERROR] File not found
