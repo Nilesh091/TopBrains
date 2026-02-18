@@ -1,0 +1,10 @@
+[
+  {
+    "ApplicantId": "CH123456",
+    "ApplicantName": "Nilesh",
+    "CurrentLocation": "Mumbai",
+    "PreferredLocation": "Bangalore",
+    "CoreCompetency": ".NET",
+    "PassingYear": 2024
+  }
+]
