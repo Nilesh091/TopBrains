@@ -10,6 +10,7 @@ builder.Services.AddDbContext<Connection>(options =>
 
 //builder.Services.AddControllers();
 builder.Services.AddScoped<ICourseManagementService, CourseManagement>();
+builder.Services.AddScoped<IStudentManagementService, Student_Management>();
 var app = builder.Build();
 
 
