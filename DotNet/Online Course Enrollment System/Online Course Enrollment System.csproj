@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers/" />
     <Folder Include="Model/" />
     <Folder Include="Model/Context/" />
+    <Folder Include="Services/" />
   </ItemGroup>
 
   <ItemGroup>
