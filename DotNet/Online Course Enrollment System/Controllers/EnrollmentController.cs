@@ -26,12 +26,12 @@ namespace Online_Course_Enrollment_System.Controllers
         {
             return Ok(enrollmentManagementService.GetAllEnrollments());
         }
-        [HttpGet("{studentId}")]
+        [HttpGet("student/{studentId}")]
         public IActionResult GetAllEnroledCourse(int studentId)
         {
             return Ok(enrollmentManagementService.GetAllEnroledCourse(studentId));
         }
-        [HttpGet("{courseId}")]
+        [HttpGet("course/{courseId}")]
         public IActionResult GetAllStudentsEnrolled(int courseId)
         {
             return Ok(enrollmentManagementService.GetAllStudentsEnrolled(courseId));
