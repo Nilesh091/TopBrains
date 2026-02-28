@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p id="Para" onclick="changeBackground()">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda, sint
+      asperiores placeat molestiae nulla architecto reprehenderit similique
+      neque tenetur nisi sequi in amet veniam sunt nobis aliquid eum praesentium
+      repudiandae?
+    </p>
+
+    <input type="password" id="pw" />
+    <button onclick="togglePassword()">show</button>
+
+    <br />
+    <input type="text" id="taskInput" />
+    <button onclick="addTask()">Add Task</button>
+    <ul id="TaskList"></ul>
+
+    <br />
+    <br />
+    <br />
+
+    <button id="theme">dark</button>
+
+    <textarea name="char" id="message"></textarea>
+
+    <p>Characters: <span id="charCount">0</span></p>
+    <style>
+      .dark {
+        background-color: rgb(0, 129, 133);
+        color: rgb(0, 0, 0);
+      }
+    </style>
+    <script>
+      function changeBackground() {
+        document.getElementById("Para").style.color = "red";
+      }
+      function togglePassword() {
+        let pass = document.getElementById("pw");
+        if (pass.type === "password") {
+          pass.type = "text";
+        } else {
+          pass.type = "password";
+        }
+      }
+
+      function addTask() {
+        let taskValue = document.getElementById("taskInput").value;
+        let li = document.createElement("li");
+        li.innerText = taskValue;
+
+        document.getElementById("TaskList").appendChild(li);
+        document.getElementById("taskInput").value = "";
+      }
+
+      document.getElementById("theme").addEventListener("click", function () {
+        document.body.classList.toggle("dark");
+        if (document.body.classList.contains("dark")) {
+          this.innerText = "light";
+        } else {
+          this.innerText = "dark";
+        }
+      });
+
+      document.getElementById("message").addEventListener("input", function () {
+        let length = this.value.length;
+        document.getElementById("charCount").innerText = length;
+      });
+    </script>
+  </body>
+</html>
