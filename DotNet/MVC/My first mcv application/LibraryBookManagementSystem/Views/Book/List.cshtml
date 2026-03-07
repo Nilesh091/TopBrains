@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Book>
+
+<h2>Book List</h2>
+
+<a asp-action="Create">Add New Book</a>
+
+<br><br>
+
+<form asp-action="Display" method="get">
+    <input type="number" name="id" placeholder="Enter Book Id" />
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
+<table border="1">
+
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Price</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var book in Model)
+    {
+        <tr>
+            <td>@book.BookId</td>
+            <td>@book.Title</td>
+            <td>@book.Author</td>
+            <td>@book.Price</td>
+
+            <td>
+                <a asp-action="Display" asp-route-id="@book.BookId">View</a> |
+                <a asp-action="Delete" asp-route-id="@book.BookId">Delete</a>
+            </td>
+
+        </tr>
+    }
+
+</table>
