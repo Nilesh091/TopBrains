@@ -1,0 +1,48 @@
+﻿Views/Student/Index.cshtml
+@model IEnumerable<Student>
+
+<h2>Student List</h2>
+
+<a href="@Url.Action("Create")">Create New Student</a>
+<table border="1" class="table table-striped table-bordered">
+
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var student in Model)
+    {
+        <tr>
+            <td>@student.Name</td>
+            <td>@student.Email</td>
+            <td>@student.Age</td>
+
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = student.StudentId }) |
+                @Html.ActionLink("Details", "Details", new { id = student.StudentId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = student.StudentId })
+            </td>
+
+        </tr>
+
+
+
+
+
+    
+    }
+
+</table>
+
+<form asp-action="Search" method="get">
+    <input type="text" name="name" placeholder="Search student name" />
+    <input type="submit" value="Search" />
+</form>
+
+<a asp-action="StudentsOlderThan20">Age > 20</a> |
+<a asp-action="OrderByName">Sort by Name</a> |
+<a asp-action="StudentCount">Total Students</a> |
+<a asp-action="GroupByDepartment">Group by Department</a>

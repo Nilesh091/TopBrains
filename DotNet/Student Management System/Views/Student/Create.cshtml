@@ -1,0 +1,37 @@
+﻿@model Student
+
+<h2>Create Student</h2>
+
+@using (Html.BeginForm())
+{
+
+    <p>
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name)
+    </p>
+
+    <p>
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email)
+    </p>
+
+    <p>
+        @Html.LabelFor(m => m.Age)
+        @Html.TextBoxFor(m => m.Age)
+    </p>
+
+    <p>
+        Gender
+        @Html.RadioButtonFor(m => m.Gender, "Male") Male
+        @Html.RadioButtonFor(m => m.Gender, "Female") Female
+    </p>
+
+    <p>
+        Department
+        @Html.DropDownListFor(m => m.DepartmentId,
+        new SelectList(ViewBag.Departments, "DepartmentId", "DepartmentName", "Select Department"))
+    </p>
+
+    <input type="submit" value="Save" />
+
+}

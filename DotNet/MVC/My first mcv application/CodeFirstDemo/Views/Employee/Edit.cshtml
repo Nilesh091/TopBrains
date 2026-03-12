@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model CodeFirstDemo.Models.Employee
+<h2>Edit Employee</h2>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="EmpId" />
+
+    <div>
+        <label asp-for="EmpName"></label>
+        <input asp-for="EmpName" class="form-control" />
+    </div>
+
+    <div>
+        <label asp-for="EmpAddress"></label>
+        <input asp-for="EmpAddress" class="form-control" />
+    </div>
+
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div>
+        <label asp-for="Salary"></label>
+        <input asp-for="Salary" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

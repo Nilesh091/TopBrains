@@ -1,0 +1,21 @@
+﻿@model IEnumerable<dynamic>
+
+<h2>Students Grouped by Department</h2>
+
+<table border="1">
+    <tr>
+        <th>Department Id</th>
+        <th>Total Students</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Department</td>
+            <td>@item.TotalStudents</td>
+        </tr>
+    }
+
+</table>
+
+<a asp-action="Index">Back to List</a>

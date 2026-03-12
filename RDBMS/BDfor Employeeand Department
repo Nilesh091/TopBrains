@@ -1,0 +1,45 @@
+-- INSERT INTO Departments (DeptName) VALUES ('HR');
+-- INSERT INTO Departments (DeptName) VALUES ('IT');
+-- INSERT INTO Departments (DeptName) VALUES ('Finance');
+-- INSERT INTO Departments (DeptName) VALUES ('Sales');
+-- INSERT INTO Departments (DeptName) VALUES ('Marketing');
+-- INSERT INTO Departments (DeptName) VALUES ('Administration');
+-- INSERT INTO Departments (DeptName) VALUES ('Customer Support');
+-- INSERT INTO Departments (DeptName) VALUES ('Research');
+-- INSERT INTO Departments (DeptName) VALUES ('Training');
+-- INSERT INTO Departments (DeptName) VALUES ('Operations');
+
+
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Pranaya', 'Pune', 60000, 'pranaya@gmail.com', 2);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Anurag', 'Goa', 25000, 'anurag@gmail.com', 4);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Preety', 'Delhi', 30000, 'preety@gmail.com', 1);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Sambit', 'Nashik', 35000, 'sambit@gmail.com', 3);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Shushanta', 'Pune', 40000, 'shushanta@gmail.com', 5);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Priyanka', 'Hyderabad', 45000, 'priyanka@gmail.com', 2);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Sandeep', 'Bangalore', 50000, 'sandeep@gmail.com', 6);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Shudhansshu', 'Nashik', 55000, 'shudhansshu@gmail.com', 7);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Hina', 'Patna', 60000, 'hina@gmail.com', 8);
+
+-- INSERT INTO Employees (EmpName, EmpAddress, Salary, Email, DepartmentDeptId)
+-- VALUES ('Preetiranjan', 'Surat', 65000, 'preetiranjan@gmail.com', 9);
+
+Select *
+from Employees
