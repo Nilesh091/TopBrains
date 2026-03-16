@@ -1,0 +1,124 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+:root {
+  --teacher-accent: #1e5eff;
+  --teacher-accent-soft: rgba(30, 94, 255, 0.18);
+  --teacher-bg: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+  --teacher-card-border: #dfe8ff;
+}
+
+.teacher-form-shell {
+  max-width: 760px;
+  margin: 2rem auto;
+  padding: 1.75rem;
+  border-radius: 16px;
+  border: 1px solid var(--teacher-card-border);
+  background: var(--teacher-bg);
+  box-shadow: 0 12px 28px rgba(25, 49, 101, 0.12);
+  animation: teacherFadeIn 0.45s ease-out;
+}
+
+.teacher-form-title {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.teacher-form-shell .form-label,
+.teacher-form-shell label {
+  font-weight: 600;
+  color: #1f2a45;
+}
+
+.teacher-form-shell .form-control,
+.teacher-form-shell .form-select,
+.teacher-form-shell select {
+  border-radius: 10px;
+  border: 1px solid #c7d6ff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.teacher-form-shell .form-control:hover,
+.teacher-form-shell .form-select:hover,
+.teacher-form-shell select:hover {
+  border-color: #8eabff;
+}
+
+.teacher-form-shell .form-control:focus,
+.teacher-form-shell .form-select:focus,
+.teacher-form-shell select:focus {
+  border-color: var(--teacher-accent);
+  box-shadow: 0 0 0 0.25rem var(--teacher-accent-soft);
+  transform: translateY(-1px);
+}
+
+.teacher-submit-btn {
+  min-width: 130px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1e5eff 0%, #2f8cff 100%);
+  color: #fff;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.2s ease;
+}
+
+.teacher-submit-btn:hover {
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(30, 94, 255, 0.28);
+}
+
+.teacher-submit-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(30, 94, 255, 0.22);
+}
+
+.teacher-field {
+  margin-bottom: 1rem;
+}
+
+.teacher-form-shell .validation-summary-errors,
+.teacher-form-shell .text-danger {
+  font-size: 0.92rem;
+}
+
+@keyframes teacherFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

@@ -1,0 +1,57 @@
+﻿@model StudentManagementSystem.Models.Student
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+<div class="teacher-form-shell">
+<h2 class="teacher-form-title">Add Student</h2>
+
+<form asp-action="CreateStudent" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="teacher-field">
+        <label>Name</label>
+        <input asp-for="StudentName" class="form-control" />
+        <span asp-validation-for="StudentName" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label>Phone</label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label>Address</label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label>Department</label>
+        <select asp-for="DepartmentId"
+                asp-items="@(new SelectList(ViewBag.Departments, "DepartmentId", "DepartmentName"))" class="form-control">
+        </select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label>Course</label>
+        <select asp-for="CourseId" asp-items="@(new SelectList(ViewBag.Courses, "CourseId", "CourseName"))"
+                class="form-control">
+        </select>
+        <span asp-validation-for="CourseId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn teacher-submit-btn">Save</button>
+
+</form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

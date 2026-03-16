@@ -1,0 +1,59 @@
+﻿@model StudentManagementSystem.Models.Student
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+<div class="teacher-form-shell">
+<h2 class="teacher-form-title">Edit Student</h2>
+
+<form asp-action="EditStudent" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="StudentId" />
+
+    <div class="teacher-field">
+        <label asp-for="StudentName" class="form-label"></label>
+        <input asp-for="StudentName" class="form-control" />
+        <span asp-validation-for="StudentName" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label asp-for="PhoneNumber" class="form-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label asp-for="DepartmentId" class="form-label"></label>
+        <select asp-for="DepartmentId"
+                asp-items="@(new SelectList(ViewBag.Departments, "DepartmentId", "DepartmentName"))" class="form-control">
+        </select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+
+    <div class="teacher-field">
+        <label asp-for="CourseId" class="form-label"></label>
+        <select asp-for="CourseId" asp-items="@(new SelectList(ViewBag.Courses, "CourseId", "CourseName"))"
+                class="form-control">
+        </select>
+        <span asp-validation-for="CourseId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn teacher-submit-btn">Update</button>
+
+</form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
