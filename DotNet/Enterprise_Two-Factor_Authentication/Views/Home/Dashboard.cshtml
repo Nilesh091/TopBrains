@@ -1,0 +1,28 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<section class="interactive-page py-4">
+    <div class="interactive-card p-4 p-md-5">
+        <h2 class="mb-4">Dashboard</h2>
+
+        @if (TempData["LoginSuccess"] != null)
+        {
+            <div class="status-message p-3 mb-3 fw-semibold">
+                @TempData["LoginSuccess"]
+            </div>
+        }
+        @if (TempData["RegisterSuccess"] != null)
+        {
+            <div class="status-message p-3 mb-3 fw-semibold">
+                @TempData["RegisterSuccess"]
+            </div>
+        }
+
+        @if (TempData["LoginSuccess"] == null && TempData["RegisterSuccess"] == null)
+        {
+            <p class="mb-0">You are signed in. Use this area to continue secure account activity.</p>
+        }
+    </div>
+</section>

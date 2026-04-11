@@ -1,0 +1,203 @@
+:root {
+  --app-bg-1: #f4f8ff;
+  --app-bg-2: #e8f5f2;
+  --app-text: #1f2937;
+  --app-accent: #0d9488;
+  --app-accent-strong: #0f766e;
+  --app-card: rgba(255, 255, 255, 0.88);
+  --app-border: rgba(13, 148, 136, 0.2);
+  --app-shadow: 0 12px 28px rgba(15, 118, 110, 0.12);
+}
+
+html {
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+body {
+  margin-bottom: 60px;
+  color: var(--app-text);
+  background:
+    radial-gradient(circle at 8% 12%, rgba(13, 148, 136, 0.16), transparent 28%),
+    radial-gradient(circle at 88% 16%, rgba(59, 130, 246, 0.14), transparent 30%),
+    linear-gradient(130deg, var(--app-bg-1), var(--app-bg-2));
+  background-attachment: fixed;
+}
+
+.app-shell {
+  min-height: calc(100vh - 140px);
+}
+
+.navbar {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.navbar:hover {
+  box-shadow: var(--app-shadow);
+}
+
+.nav-link {
+  border-radius: 10px;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: rgba(13, 148, 136, 0.12);
+  color: var(--app-accent-strong) !important;
+  transform: translateY(-1px);
+}
+
+.interactive-page {
+  animation: fade-slide 0.45s ease both;
+}
+
+.interactive-card {
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  box-shadow: var(--app-shadow);
+  backdrop-filter: blur(4px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.interactive-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(13, 148, 136, 0.38);
+  box-shadow: 0 18px 34px rgba(15, 118, 110, 0.18);
+}
+
+.interactive-form .form-control,
+.interactive-form input[type="text"],
+.interactive-form input[type="password"],
+.interactive-form input[type="email"] {
+  border-radius: 12px;
+  border: 1px solid rgba(13, 148, 136, 0.26);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.interactive-form .form-control:focus,
+.interactive-form input[type="text"]:focus,
+.interactive-form input[type="password"]:focus,
+.interactive-form input[type="email"]:focus {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.18);
+  transform: translateY(-1px);
+}
+
+.interactive-button,
+button[type="submit"],
+a.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 0.52rem 1.1rem;
+  background: linear-gradient(120deg, var(--app-accent), var(--app-accent-strong));
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.interactive-button:hover,
+button[type="submit"]:hover,
+a.btn:hover {
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(13, 148, 136, 0.28);
+}
+
+.interactive-link {
+  color: var(--app-accent-strong);
+  text-decoration: none;
+  position: relative;
+}
+
+.interactive-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: var(--app-accent-strong);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.interactive-link:hover::after {
+  transform: scaleX(1);
+}
+
+.status-message {
+  border-left: 4px solid #16a34a;
+  border-radius: 8px;
+  background: #ecfdf3;
+  color: #166534;
+}
+
+.qr-image {
+  width: 220px;
+  max-width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--app-border);
+  transition: transform 0.25s ease;
+}
+
+.qr-image:hover {
+  transform: scale(1.03);
+}
+
+.manual-key {
+  display: inline-block;
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  letter-spacing: 0.05em;
+  background-color: #f9fafb;
+  border: 1px dashed rgba(13, 148, 136, 0.35);
+}
+
+.footer a {
+  color: var(--app-accent-strong);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem #fff, 0 0 0 0.25rem rgba(13, 148, 136, 0.34);
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+@keyframes fade-slide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

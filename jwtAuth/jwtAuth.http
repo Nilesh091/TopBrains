@@ -1,0 +1,69 @@
+@jwtAuth_HostAddress = http://localhost:5059
+
+### 🔐 1. LOGIN → Get JWT Token
+POST {{jwtAuth_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password"
+}
+
+###
+
+### 📋 2. GET ALL EMPLOYEES (Without Token → Should Fail)
+GET {{jwtAuth_HostAddress}}/api/employees
+Accept: application/json
+
+###
+
+### 📋 3. GET ALL EMPLOYEES (With Token → Should Work)
+GET {{jwtAuth_HostAddress}}/api/employees
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3NzQyNTg5OTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwNTkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDU5In0.5pgeZCo7O0tNBLTD1IlYV522J_LFQhmvBY4sCNI0syU
+Accept: application/json
+
+###
+
+### ➕ 4. ADD EMPLOYEE
+POST {{jwtAuth_HostAddress}}/api/employees
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3NzQyNTg5OTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwNTkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDU5In0.5pgeZCo7O0tNBLTD1IlYV522J_LFQhmvBY4sCNI0syU
+Content-Type: application/json
+
+{
+  "name": "Nilesh",
+  "address": "Punjab",
+  "gender": "Male",
+  "company": "TopBrains",
+  "designation": "Backend Developer"
+}
+
+###
+
+### 🔍 5. GET EMPLOYEE BY ID
+GET {{jwtAuth_HostAddress}}/api/employees/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3NzQyNTg5OTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwNTkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDU5In0.5pgeZCo7O0tNBLTD1IlYV522J_LFQhmvBY4sCNI0syU
+Accept: application/json
+
+###
+
+### ✏️ 6. UPDATE EMPLOYEE
+PUT {{jwtAuth_HostAddress}}/api/employees/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3NzQyNTg5OTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwNTkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDU5In0.5pgeZCo7O0tNBLTD1IlYV522J_LFQhmvBY4sCNI0syU
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Nilesh Updated",
+  "address": "Punjab",
+  "gender": "Male",
+  "company": "TopBrains",
+  "designation": "Senior Developer"
+}
+
+###
+
+### ❌ 7. DELETE EMPLOYEE
+DELETE {{jwtAuth_HostAddress}}/api/employees/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3NzQyNTg5OTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjUwNTkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo1MDU5In0.5pgeZCo7O0tNBLTD1IlYV522J_LFQhmvBY4sCNI0syU
+
+###

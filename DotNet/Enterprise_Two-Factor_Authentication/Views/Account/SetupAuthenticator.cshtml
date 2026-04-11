@@ -1,0 +1,23 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<section class="interactive-page py-4">
+    <div class="interactive-card p-4 p-md-5 mx-auto" style="max-width: 640px;">
+        <h2 class="mb-3">Setup Authenticator</h2>
+
+        <p class="mb-3">Scan this QR code using Google Authenticator.</p>
+
+        <img src="data:image/png;base64,@Model.QRCodeImage" class="qr-image mb-3" alt="Authenticator QR code" />
+
+        <p class="mb-2">Manual Key:</p>
+
+        <p class="manual-key mb-4">@Model.ManualKey</p>
+
+        <a asp-controller="Account" asp-action="VerifyAuthenticator" class="interactive-button">
+            Verify Authenticator
+        </a>
+    </div>
+</section>

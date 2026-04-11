@@ -1,0 +1,50 @@
+@OrderManagementSystem_HostAddress = http://localhost:5203
+
+###############################################
+### 1. ADD ORDER (POST)
+###############################################
+
+
+GET {{OrderManagementSystem_HostAddress}}/api/Order/GetAllOrders
+
+POST {{OrderManagementSystem_HostAddress}}/api/Order/Add
+Content-Type: application/json
+Accept: application/json
+
+{
+	"id": "O001",
+	"productId": "P001",
+	"cost": 500.5,
+	"placed": "2022-01-05T00:00:00",
+	"customerId": "C002",
+	"status": "Process"
+}
+
+###
+
+###############################################
+### 2. GET ORDER BY ID
+###############################################
+
+GET {{OrderManagementSystem_HostAddress}}/api/Order/GetById/O005
+Accept: application/json
+
+###
+
+###############################################
+### 3. GET ORDERS BY CUSTOMER ID
+###############################################
+
+GET {{OrderManagementSystem_HostAddress}}/api/Order/GetByCustomerId/C001
+Accept: application/json
+
+###
+
+###############################################
+### 4. CANCEL ORDER (DELETE)
+###############################################
+
+DELETE {{OrderManagementSystem_HostAddress}}/api/Order/Cancel/O005
+Accept: application/json
+
+###

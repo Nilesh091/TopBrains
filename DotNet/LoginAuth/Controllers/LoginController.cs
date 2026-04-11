@@ -26,7 +26,7 @@ namespace LoginAuth.Controllers
             }
             else
             {
-                ViewBag.username = "Invalid username or password for" + username;
+                ViewBag.username = "Invalid username or password for : " + username;
                 return View();
             }
         }

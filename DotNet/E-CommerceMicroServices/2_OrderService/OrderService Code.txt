@@ -1,0 +1,359 @@
+namespace OrderService.Models
+{
+    public class Order
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; } // The user who placed the order
+        public string ProductName { get; set; }
+        public int Quantity { get; set; }
+        public decimal TotalPrice { get; set; }
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+    }
+}
+=================================================================================
+using OrderService.Models;
+
+namespace OrderService.Repositories
+{
+    public interface IOrderRepository
+    {
+        Task<IEnumerable<Order>> GetAllOrders();
+        Task<Order> GetOrderById(int id);
+        Task<Order> CreateOrder(Order order);
+        Task AddOrder(Order order);
+        Task UpdateOrder(Order order);
+        Task DeleteOrder(int? id);
+    }
+}
+=====================================================================================
+Add the EntityFramework Core Packages
+------------------------------------- 
+install-package Microsoft.EntityframeworkCore
+install-package Microsoft.EntityframeworkCore.sqlserver
+install-package Microsoft.EntityframeworkCore.Design
+install-package Microsoft.EntityframeworkCore.Tools
+install-package Microsoft.EntityframeworkCore.Relational
+install-package Swashbuckle.AspNetCore -version 8.0
+
+install-package BCrypt.Net-Next
+install-package Microsoft.AspNetCore.Authentication.JwtBearer -version 8.0.0
+
+====================================================================
+Add Configure  Connectionstring in AppSetting.json file 
+
+    "ConnectionStrings": {
+        "OrderDb": "Server=DESKTOP-3F0IP8F\\SQLEXPRESS;Database=OrderDb;integrated security = true; Trust Server Certificate=true"
+    }
+
+====================================================================
+Create DBContext Class
+using Microsoft.EntityFrameworkCore;
+using OrderService.Models;
+
+
+namespace OrderService.Data
+{
+    public class OrderDbContext : DbContext
+
+    {
+        public OrderDbContext(DbContextOptions<OrderDbContext> options) : base(options) { }
+        public DbSet<Order> Orders { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+           
+
+            modelBuilder.Entity<Order>().HasData(
+    new Order { Id = 1, UserId = 1, ProductName = "Laptop", Quantity = 1, TotalPrice = 1200.99m, OrderDate = new DateTime(2024, 06, 01, 10, 0, 0) },
+    new Order { Id = 2, UserId = 1, ProductName = "Mouse", Quantity = 2, TotalPrice = 40.50m, OrderDate = new DateTime(2024, 06, 01, 10, 0, 0) },
+    new Order { Id = 3, UserId = 2, ProductName = "Keyboard", Quantity = 1, TotalPrice = 70.00m, OrderDate = new DateTime(2024, 06, 01, 10, 0, 0) },
+    new Order { Id = 4, UserId = 2, ProductName = "Monitor", Quantity = 1, TotalPrice = 250.00m, OrderDate = new DateTime(2024, 06, 01, 10, 0, 0) },
+    new Order { Id = 5, UserId = 1, ProductName = "USB Cable", Quantity = 3, TotalPrice = 15.75m, OrderDate = new DateTime(2024, 06, 01, 10, 0, 0) }
+);
+    }
+}
+
+===================================================================================
+Register  DbConext and Connnection string in Program.cs file 
+-------------------------------------------------------------
+builder.Services.AddDbContext<OrderDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OrderDb")));
+
+
+====================================================================================
+
+add-migration initialCreated
+update-database
+=====================================================================================
+using Microsoft.EntityFrameworkCore;
+using OrderService.Data;
+using OrderService.Models;
+
+namespace OrderService.Repositories
+{
+    public class OrderRepository: IOrderRepository
+    {
+        private readonly OrderDbContext _context;
+
+        public OrderRepository(OrderDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Order>> GetAllOrders() => await _context.Orders.ToListAsync();
+
+        public async Task<Order> GetOrderById(int id) => await _context.Orders.FindAsync(id);
+
+        public async Task AddOrder(Order order)
+        {
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateOrder(Order order)
+        {
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<Order> CreateOrder(Order order)
+        {
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+            return order;
+        }
+
+        public async Task DeleteOrder(int? id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if (order != null)
+            {
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
+        }
+    }
+}
+
+==============================================================================================
+Register in Program.cs
+----------------------
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+
+
+
+===============================================================================================
+OrderController
+---------------
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OrderService.Models;
+using OrderService.Repositories;
+
+namespace OrderService.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrderController : ControllerBase
+    {
+        private readonly IOrderRepository _orderRepository;
+
+        public OrderController(IOrderRepository orderRepository)
+        {
+            _orderRepository = orderRepository;
+        }
+
+        // 🔹 Get All Orders
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        {
+            return Ok(await _orderRepository.GetAllOrders());
+        }
+
+        // 🔹 Get Order by ID
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrder(int id)
+        {
+            var order = await _orderRepository.GetOrderById(id);
+            if (order == null) return NotFound();
+            return Ok(order);
+        }
+
+        // 🔹 Create a New Order
+        [HttpPost]
+        public async Task<ActionResult<Order>> CreateOrder([FromBody] Order order)
+        {
+            var newOrder = await _orderRepository.CreateOrder(order);
+            return CreatedAtAction(nameof(GetOrder), new { id = newOrder.Id }, newOrder);
+        }
+
+        // 🔹 Update an Order
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Order>> UpdateOrder(int id, [FromBody] Order order)
+        {
+            if (id != order.Id) return BadRequest("Order ID mismatch");
+         
+           
+            await _orderRepository.UpdateOrder(order);
+            return Ok(order);
+        }
+
+        // 🔹 Delete an Order
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteOrder(int? id)
+        {
+             
+            if (id==null) return NotFound();
+            await _orderRepository.DeleteOrder(id);
+            return NoContent();
+        }
+    }
+}
+
+=============================================================================================
+Adding Authication
+-------------------
+Add [Authorize] attribute
+------------------------
+
+
+ [Route("api/[controller]")]
+ [ApiController]
+ [Authorize]
+ public class OrderController : ControllerBase
+ {
+     private readonly IOrderRepository _orderRepository;
+ 
+
+ ...
+ ...
+
+}
+
+Install the following Packages 
+------------------------------
+install-package BCrypt.Net-Next
+install-package Microsoft.AspNetCore.Authentication.JwtBearer -version 8.0.0
+install-package Swashbuckle.AspNetCore -version 8.0
+
+Add  Authantication Handler in Program.cs File 
+-----------------------------------------------
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["Secret"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+    });
+
+Add  Authantication Middleware in Program.cs File 
+-----------------------------------------------
+app.UseAuthentication();//Add this Line
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+
+Configure the Token in appsetting.json File 
+-------------------------------------------
+ "AllowedHosts": "*",
+ "ConnectionStrings": {
+     "OrderDb": "Server=DESKTOP-3F0IP8F\\SQLEXPRESS;Database=OrderDb;integrated security = true; Trust Server Certificate=true"
+ }, 
+//Add the following Line
+"JwtSettings": {
+     "Secret": "YourSuperSecretKey1234567891011121314151617181920!", // Must match in both signing and validation
+     "Issuer": "YourIssuer",
+     "Audience": "YourAudience",
+     "ExpirationInMinutes": 60
+ }
+
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "E-Commerce API",
+        Version = "v1",
+        Description = "An ASP.NET Core Web API for E-Commerce Microservices",
+        Contact = new OpenApiContact
+        {
+            Name = "Your Name",
+            Email = "your.email@example.com",
+            Url = new Uri("https://yourwebsite.com")
+        }
+    });
+    // Add JWT Authentication to Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer <your_token>'"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    //app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Order API v1");
+        options.RoutePrefix = string.Empty; // Opens Swagger at root
+    });
+
+}
+Run Both UserService and OrderServices togather by
+RightClick on Solution=>Propertices=>Multiple StartUp Project=>
+On Project Section  
+Select Start for UserService
+Select Start for OrderService
+Click Apply and Ok
+
+Riun The Project 
+
+Authinticate the User by entering User Id and Passward 
+It will Return Password 
+GoTo Order Services =>Click on Authrized Header Past the token =>Click Autharized =>Close
+Now Click on All Orders 
+You will See that You can assess all the orders after authintication 
+  
+
+

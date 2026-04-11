@@ -1,0 +1,788 @@
+What is Microservices Architecture?
+
+Microservices is an architectural style where an 
+application is built as a collection of small, 
+independent services that communicate over a network. 
+
+Each service is loosely coupled, meaning it operates independently and 
+is responsible for a specific business function.
+
+For example, an e-commerce application might have separate microservices for:
+✅ User Management
+✅ Product Catalog
+✅ Orders & Payments
+✅ Shipping & Delivery
+
+️⃣ Characteristics of Microservices
+---------------------------------
+✅ Independent Deployment
+Each microservice can be deployed separately without affecting others.
+
+✅ Single Responsibility
+Each microservice focuses on one task (e.g., handling orders, managing users).
+
+✅ Decentralized Data Management
+Each service manages its own database, reducing dependencies.
+
+✅ API-Based Communication
+Services communicate using REST APIs, gRPC, or messaging systems
+ (Kafka, RabbitMQ, etc.).
+
+✅ Scalable & Resilient
+Since services run independently, you can scale them separately.
+________________________________________
+
+️⃣ Monolithic vs. Microservices
+
+Feature			Monolithic Architecture					Microservices Architecture
+
+Scalability		Difficult to scale					Easily scalable per service
+Development		One large codebase					Multiple independent services
+Deployment		Entire application redeployed on changes		Individual services deployed separately
+Failure Impact		Entire app may crash					Failure in one service doesn’t affect others
+Technology		Single technology stack					Different services can use different technologies
+Database		Shared database						Each service has its own database
+
+
+How Microservices Communicate?
+Microservices communicate with each other using:
+
+✅ RESTful APIs (HTTP-based communication)
+
+✅ gRPC (Efficient binary communication)
+
+✅ Message Brokers (RabbitMQ, Kafka, Azure Service Bus)
+
+✅ Event-driven architecture (Using WebSockets or SignalR)
+
+Example:
+•	Order Service calls Payment Service using REST API
+•	Payment Service updates Order Status and sends a message to Notification Service
+
+
+/ECommerce-Microservices  
+  ├── UserService  
+  ├── ProductService  
+  ├── OrderService  
+  ├── PaymentService  
+  ├── NotificationService  
+  ├── API Gateway (Ocelot)  
+  ├── Event Bus (RabbitMQ/Kafka)  
+  ├── Docker & Kubernetes Config  
+
+
+
+1)Create a Blank Solution and Name it as ECommerce-Microservices
+Create NEw Project =>Select C# =>All Platfrom=>Web=>ASPNEt core empty
+
+
+2)Create Two Web Api Project in ECommerce-Microservices
+1)UserService  
+2)OrderService
+/ECommerce-Microservices  
+  ├── UserService  
+  │   ├── Controllers  
+  │   ├── Data  
+  │   ├── Models  
+  │   ├── Repositories  
+  │   ├── Services  
+  │   ├── UserService.csproj  
+  │   ├── Program.cs  
+  ├── OrderService  
+  │   ├── Controllers  
+  │   ├── Data  
+  │   ├── Models  
+  │   ├── Repositories  
+  │   ├── Services  
+  │   ├── OrderService.csproj  
+  │   ├── Program.cs  
+
+
+namespace UserService.Models
+{
+    public class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string PasswordHash { get; set; }
+    }
+}
+=================================================================================================
+using UserService.Models;
+
+namespace UserService.Repositories
+{
+    public interface IUserRepository
+    {
+        Task<IEnumerable<User>> GetAllUsers();
+        Task<User> GetUserById(int id);
+        Task<User> GetUserByEmail(string email);
+        Task AddUser(User user);
+        Task<User> CreateUser(User user);
+        Task UpdateUser(User user);
+        Task DeleteUser(int id);
+    }
+}
+
+======================================================================================================
+using Microsoft.EntityFrameworkCore;
+using UserService.Data;
+using UserService.Models;
+
+namespace UserService.Repositories
+{
+    public class UserRepository: IUserRepository
+    {
+        private readonly UserDbContext _context;
+
+        public UserRepository(UserDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsers() => await _context.Users.ToListAsync();
+
+        public async Task<User> GetUserById(int id) => await _context.Users.FindAsync(id);
+
+        public async Task<User> GetUserByEmail(string email) =>
+            await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+        public async Task AddUser(User user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+            }
+        }
+        public async Task<User> CreateUser(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+    }
+}
+
+=================================================================================
+Regirster Service in Program.cs
+--------------------------------
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+=============================================================================================
+install the EntityframeworkCore Packages 
+------------------------------------------
+install-package Microsoft.EntityframeworkCore
+install-package Microsoft.EntityframeworkCore.sqlserver
+install-package Microsoft.EntityframeworkCore.Design
+install-package Microsoft.EntityframeworkCore.Tools
+install-package Microsoft.EntityframeworkCore.Relational
+install-package Swashbuckle.AspNetCore -version 8.0
+
+
+Create DBContext Class in Data Folder
+----------------------------------------
+using Microsoft.EntityFrameworkCore;
+using UserService.Models;
+
+namespace UserService.Data
+{
+    public class UserDbContext:DbContext
+    {
+        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options) { }
+        public DbSet<User> Users { get; set; }
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<User>().HasData(
+        new User { Id = 1, Name = "Alice", Email = "alice@example.com", PasswordHash = "hashedpassword1" },
+        new User { Id = 2, Name = "Bob", Email = "bob@example.com", PasswordHash = "hashedpassword2" },
+        new User { Id = 3, Name = "Charlie", Email = "charlie@example.com", PasswordHash = "hashedpassword3" },
+        new User { Id = 4, Name = "David", Email = "david@example.com", PasswordHash = "hashedpassword4" },
+        new User { Id = 5, Name = "Eve", Email = "eve@example.com", PasswordHash = "hashedpassword5" },
+        new User { Id = 6, Name = "Frank", Email = "frank@example.com", PasswordHash = "hashedpassword6" },
+        new User { Id = 7, Name = "Grace", Email = "grace@example.com", PasswordHash = "hashedpassword7" },
+        new User { Id = 8, Name = "Hank", Email = "hank@example.com", PasswordHash = "hashedpassword8" },
+        new User { Id = 9, Name = "Ivy", Email = "ivy@example.com", PasswordHash = "hashedpassword9" },
+        new User { Id = 10, Name = "Jack", Email = "jack@example.com", PasswordHash = "hashedpassword10" }
+    );
+}
+    }
+}
+
+
+Configure the Connection String AppSetting.json File 
+----------------------------------------------------
+"AllowedHosts": "*",
+"ConnectionStrings": {
+    "UserDb": "Server=DESKTOP-3F0IP8F\\SQLEXPRESS;Database=UserDb;integrated security = true; Trust Server Certificate=true"
+},
+
+
+
+
+Regirster DbContext and Connection String in Program.cs
+--------------------------------------------------------
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("UserDb")));
+
+Configure Swagger in Program.cs
+--------------------------------
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Order Microservice API",
+        Version = "v1",
+        Description = "ASP.NET Core 9.0 Order Microservice",
+        Contact = new OpenApiContact
+        {
+            Name = "Your Name",
+            Email = "your.email@example.com",
+            Url = new Uri("https://yourwebsite.com")
+        }
+    });
+    // Add JWT Authentication to Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer <your_token>'"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    //app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Order API v1");
+    options.RoutePrefix = string.Empty; // Opens Swagger at root
+});
+
+}
+
+add-migration InitialCreate
+update-database
+
+==============================================================================================================
+Add the UserControler in Controller Folder
+-------------------------------------------
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using UserService.Models;
+using UserService.Repositories;
+
+namespace UserService.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserRepository _userRepository;
+
+        public UserController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        // ✅ GET All Users
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            return Ok(await _userRepository.GetAllUsers());
+        }
+
+        // ✅ GET User by ID
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUser(int id)
+        {
+            var user = await _userRepository.GetUserById(id);
+            if (user == null) return NotFound();
+            return Ok(user);
+        }
+
+        // ✅ CREATE a New User
+        [HttpPost]
+        public async Task<ActionResult<User>> CreateUser([FromBody] User user)
+        {
+            if (user == null) return BadRequest();
+            User newUser = await _userRepository.CreateUser(user);
+            return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, newUser);
+        }
+
+        // ✅ UPDATE User
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
+        {
+            if (id != user.Id) return BadRequest("User ID mismatch");
+
+            var existingUser = await _userRepository.GetUserById(id);
+            if (existingUser == null) return NotFound();
+ 		existingUser.Name = user.Name;
+ 		existingUser.Email = user.Email;
+ 		existingUser.PasswordHash = user.PasswordHash;
+
+            await _userRepository.UpdateUser(existingUser);
+            return NoContent();
+        }
+
+        // ✅ DELETE User
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            await _userRepository.DeleteUser(id);
+            if (id==null) return NotFound();
+            return NoContent();
+        }
+    }
+}
+
+=============================================================================================================
+Implement JWT Authentication
+============================
+Each microservice should have JWT-based authentication.
+
+
+
+
+What is Authentication
+----------------------
+Authentication is the process of verifying the 
+identity of an individual. 
+
+It is about determining who the user is.
+
+For Example, Companies Provide ID Card to Employees on joining. 
+An Employee needs to present or scan their ID at the entrance to 
+enter the workplace. 
+
+There are many ways to handle Authentication in web applications. For Example
+•	Cookie-Based authentication
+•	Token-Based authentication
+•	Third-party access(OAuth, API-token)
+•	OpenId
+•	SAML
+
+
+
+What is Authorization
+---------------------
+Authorization determines what the user allowed to do.
+For Example, the Employee does not have access to everything 
+inside the workplace. 
+
+He can enter only those departments for which he has authorization. 
+For Example, the Server Room access is only for IT Personnel. 
+Only finance people can access financial related information.
+
+Claims, ClaimsIdentity & ClaimsPrincipal
+----------------------------------------
+
+The ASP.NET Core uses claims-based authentication. 
+To understand it, first, we need to understand what is a Claim, ClaimsIdentity & ClaimsPrincipal
+
+Claim
+A Claim is a piece of information about the user. 
+It is consists of a Claim type and an optional value. 
+We store it in the form of name-value pair. 
+A Claim can be anything for example Name Claim, 
+Email Claim, Role Claim, PhoneNumber Claim, etc.
+
+The Authorization Module uses the Claims to check whether the user 
+has the rights to access the resources.
+
+
+ClaimsIdentity
+The ClaimsIdentity is a collection of Claims.
+For Example take your driving license. 
+It has claims like FirstName, LastName, DateOfBirth etc. 
+Hence the driving license is the ClaimsIdentity
+
+ClaimsPrincipal
+ClaimsPrincipal contains a collection of ClaimsIdentity. 
+You can think of the ClaimsPrincipal (or Principal or Identity) 
+as the user of your app.
+
+A User can have more than one ClaimsIdentity. 
+For Example, both driving license & Passport.
+
+A driving license is a ClaimsIdentity with claims like 
+FirstName, LastName, DateOfBirth & DLNo, etc 
+Passport is another ClaimsIdentity with claims 
+like FirstName, LastName, Address, PassportNo, etc.
+Both identifies the same user or ClaimsPrincipal.
+
+
+
+
+🔹 Install JWT Authentication Package
+Run this command in UserService:
+install-package Microsoft.AspNetCore.Authentication.JwtBearer -version 8.0.0
+Install-Package BCrypt.Net-Next
+
+Add Authentication Configuration
+📁 Program.cs
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Configure JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["Secret"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 16)
+{
+    throw new Exception("JWT Secret key must be at least 16 characters long.");
+}
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+    });
+
+
+var app = builder.Build();
+app.UseAuthentication();//Add this Line
+app.UseAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.MapControllers();
+app.Run();
+
+
+=====================================================================================================================
+Implement Login & Register API
+We need to implement a login and registration system.
+
+🔹 Create LoginModel and RegisterModel
+📁 Models/LoginModel.cs
+
+
+public class LoginModel
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+}
+
+Models/RegisterModel.cs
+
+public class RegisterModel
+{
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string Password { get; set; }
+}
+
+Implement AuthController
+📁 Controllers/AuthController.cs
+
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using UserService.Models;
+using UserService.Repositories;
+
+namespace UserService.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IConfiguration _configuration;
+        public AuthController(IUserRepository userRepository, IConfiguration config)
+        {
+            _userRepository = userRepository;
+            _configuration = config;
+        }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        {
+            var user = new User
+            {
+                Name = model.Name,
+                Email = model.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password) // Hash password
+		//Install the following Package install-package BCrypt.Net-Next
+		
+            };
+
+            await _userRepository.CreateUser(user);
+            return Ok("User registered successfully");
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        {
+            var user = await _userRepository.GetUserByEmail(model.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+            {
+                return Unauthorized("Invalid credentials");
+            }
+
+            var token = GenerateJwtToken(user);
+            return Ok(new { Token = token });
+        }
+        private string GenerateJwtToken(User user)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["Secret"];
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Name, user.Email),
+        };
+
+            var token = new JwtSecurityToken(
+                issuer,
+                audience,
+                claims,
+                expires: DateTime.UtcNow.AddHours(10),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    }
+}
+
+
+
+
+Add JWT Secret Key to appsettings.json
+--------------------------------------
+  "JwtSettings": {
+     "Secret": "YourSuperSecretKey1234567891011121314151617181920!", // Must match in both signing and validation
+     "Issuer": "YourIssuer",
+     "Audience": "YourAudience",
+     "ExpirationInMinutes": 60
+ }
+===========================================================================================
+Configure the Swagger for Authincatization Header in Program.cs  File
+-------------------------------------------------
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "E-Commerce API",
+        Version = "v1",
+        Description = "An ASP.NET Core Web API for E-Commerce Microservices",
+        Contact = new OpenApiContact
+        {
+            Name = "Your Name",
+            Email = "your.email@example.com",
+            Url = new Uri("https://yourwebsite.com")
+        }
+    });
+    // Add JWT Authentication to Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer <your_token>'"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+
+
+
+
+=========================================================================================
+Complete Code For Program.cs File
+-----------------------------------
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using UserService.Data;
+using UserService.Repositories;
+using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+var builder = WebApplication.CreateBuilder(args);
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["Secret"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 16)
+{
+    throw new Exception("JWT Secret key must be at least 16 characters long.");
+}
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+    });
+
+
+//Add the Authentication Middleware before Authorization() Middleware
+----------------------------------------------------------------------
+app.UseAuthentication();
+app.UseAuthorization(); 
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "E-Commerce API",
+        Version = "v1",
+        Description = "An ASP.NET Core Web API for E-Commerce Microservices",
+        Contact = new OpenApiContact
+        {
+            Name = "Your Name",
+            Email = "your.email@example.com",
+            Url = new Uri("https://yourwebsite.com")
+        }
+    });
+    // Add JWT Authentication to Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer <your_token>'"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("UserDb")));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+// Configure JWT Authentication
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+
+
+
+===========================================================================================
+
+Run the Project 
+Register the User
+Validate the User by entering user Name Password
+

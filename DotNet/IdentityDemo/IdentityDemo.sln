@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleBasedAuthentication", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentManagementSystem", "StudentManagementSystem\StudentManagementSystem.csproj", "{402E5BC2-53E2-4351-8E7C-EC502FB5848C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enterprise_Two-Factor_Authentication", "Enterprise_Two-Factor_Authentication\Enterprise_Two-Factor_Authentication.csproj", "{1AD77C1E-E757-457D-96E8-4B711232E79B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{402E5BC2-53E2-4351-8E7C-EC502FB5848C}.Release|x64.Build.0 = Release|Any CPU
 		{402E5BC2-53E2-4351-8E7C-EC502FB5848C}.Release|x86.ActiveCfg = Release|Any CPU
 		{402E5BC2-53E2-4351-8E7C-EC502FB5848C}.Release|x86.Build.0 = Release|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Debug|x64.Build.0 = Debug|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Debug|x86.Build.0 = Debug|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Release|x64.Build.0 = Release|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Release|x86.ActiveCfg = Release|Any CPU
+		{1AD77C1E-E757-457D-96E8-4B711232E79B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
