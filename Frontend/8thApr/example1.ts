@@ -44,3 +44,16 @@ function sum(a: number, b: number):number {
 
 let result:number = sum(5, 10);
 console.log("The sum is: " + result);
+
+function concat(value1 :string, value2: string): string {
+    return value1 + value2;
+}
+
+let result2:string = concat("Hello, ", "World!");
+console.log(result2);
+
+function printMessage(message: string|number): void {
+    console.log("Message: " + message);
+}
+printMessage("This is a string message.");
+printMessage(12345);
